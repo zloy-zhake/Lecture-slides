@@ -1,0 +1,483 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/home/zhake/reveal.js/css/reveal.css">
+	<link rel="stylesheet" type="text/css" href="/home/zhake/reveal.js/css/theme/white.css">
+</head>
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<b>Lecture 1 test</b>
+				<br />
+				<a href="https://goo.gl/forms/LP0mIL4qIndXQBxU2">https://goo.gl/forms/LP0mIL4qIndXQBxU2</a>
+				<br />
+				<img src="qr-test-1.gif" />
+				<br />
+				Если необходим интернет:
+				<br />
+				SSID: Lab_IIS
+				<br />
+				Пароль: 0123456789
+			</section>
+			
+			<section>
+				<section>
+					<div align="center"><b>Managing threads</b></div>
+					<br />
+					<ol>
+						<li><b>Basic thread management</b></li>
+						<li>Passing arguments to a thread function</li>
+						<li>Transferring ownership of a thread</li>
+						<li>Choosing the number of threads at runtime</li>
+						<li>Identifying threads</li>
+					</ol>
+				</section>
+
+				<section>
+					<b>1.1 Launching a thread</b>
+					<ul>
+					<li>Create an object of std::thread class</li>
+					<li>Pass it a task (usually - void func())</li>
+						<ul>
+							<li>Any Callable type</li>
+							<li>Lambda-expression</li>
+						</ul>
+					</ul>
+<pre>
+void do_some_work();
+std::thread my_thread(do_some_work);
+</pre>
+				</section>
+
+				<section>
+					<b>After creating a thread:</b>
+					<br />
+					<ul>
+						<li>wait till it ends (join)</li>
+						or
+						<li>leave it alone (detach)</li>
+					</ul>
+				</section>
+
+				<section>
+					If you do not want to wait for a thread to end, you have to guarantee that data used by the thread is valid while the thread needs it.
+				</section>
+
+				<section>
+					<ul>
+						<li>You can make the thread function <b>self-contained</b> and copy the	data into the thread rather than sharing the data.</li>
+						<li>Data should not cantain pointers/references "outside".</li>
+					</ul>
+				</section>
+
+				<section>
+					<b>1.2 Waiting for a thread to complete</b>
+					<br />
+					If you need to wait for a thread to complete, you can do this by calling join() on the associated std::thread instance.
+<pre>
+int main()
+{
+	std::thread t(hello);
+	t.join();
+}
+</pre>
+				</section>
+
+				<section>
+					<b>1.3 Waiting in exceptional circumstances</b>
+					<ul>
+						<li>If an exception is thrown after the thread has been started but before the call to join(), the call to join() might be skipped.</li>
+						<li>It has to be called even if an exception is thrown.</li>
+					</ul>
+				</section>
+
+				<section>
+<pre>
+...
+
+std::thread t(my_func);
+
+try
+{
+	do_something_in_current_thread();
+}
+catch(...)
+{
+	t.join();
+	throw;
+}
+
+t.join();
+</pre>
+				</section>
+
+				<section>
+					More covenient way - create a class and call join() in its destructor.
+					<br />
+<pre>
+class thread_guard
+{
+	std::thread& t;
+	public:
+	~thread_guard()
+	{
+		if(t.joinable())
+		{
+			t.join();
+		}
+	}
+};
+
+void f()
+{
+	std::thread t(my_func);
+	thread_guard g(t);
+	
+	do_something_in_current_thread();
+}
+</pre>
+					When the execution of the current thread reaches the end of f(), the local objects are destroyed in reverse order of construction.
+				</section>
+
+				<section>
+					<b>1.4 Running threads in the background</b>
+					<ul>
+						<li>Detached threads run in the background</li>
+						<li>No way to connect to them</li>
+						<li>Daemon threads</li>
+					</ul>
+<pre>
+std::thread t(do_background_work);
+t.detach();
+</pre>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Managing threads</b></div>
+					<br />
+					<ol>
+						<li>Basic thread management</li>
+						<li><b>Passing arguments to a thread function</b></li>
+						<li>Transferring ownership of a thread</li>
+						<li>Choosing the number of threads at runtime</li>
+						<li>Identifying threads</li>
+					</ol>
+				</section>
+
+				<section>
+<pre>
+void f(int i,std::string const& s);
+std::thread t(f,3,”hello”);
+</pre>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Managing threads</b></div>
+					<br />
+					<ol>
+						<li>Basic thread management</li>
+						<li>Passing arguments to a thread function</li>
+						<li><b>Transferring ownership of a thread</b></li>
+						<li>Choosing the number of threads at runtime</li>
+						<li>Identifying threads</li>
+					</ol>
+				</section>
+
+				<section>
+					<ul>
+						<li>If a thread is created in one function, and another function should wait for it to complete.</li>
+						<li>std::thread is not copyable, but movable type.</li>
+					</ul>
+<pre>
+void some_function();
+void some_other_function();
+std::thread t1(some_function);
+std::thread t2=std::move(t1);
+t1=std::thread(some_other_function);
+std::thread t3;
+t3=std::move(t2);
+t1=std::move(t3);
+</pre>
+				</section>
+
+				<section>
+					Ownership can be transferred out of a function:
+<pre>
+std::thread f()
+{
+	void some_function();
+	return std::thread(some_function);
+}
+
+std::thread g()
+{
+	void some_other_function(int);
+	std::thread t(some_other_function,42);
+	return t;
+}
+</pre>
+				</section>
+
+				<section>
+					Ownership can be transferred into a function:
+<pre>
+void f(std::thread t);
+
+void g()
+{
+	void some_function();
+	f(std::thread(some_function));
+	std::thread t(some_function);
+	f(std::move(t));
+}
+</pre>
+				</section>
+
+				<section>
+					std::thread can be put in containers, if those containers are move aware.
+<div style="width:100%; height:500px; overflow:scroll;">
+<pre>
+void do_work(unsigned id);
+
+void f()
+{
+	std::vector&lt;std::thread&gt; threads;
+	for(unsigned i=0;i&lt;20;++i)
+	{
+		threads.push_back(std::thread(do_work,i));
+	}
+
+	std::for_each(threads.begin(), threads.end(), std::mem_fn(&std::thread::join));
+}
+</pre>
+</div>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Managing threads</b></div>
+					<br />
+					<ol>
+						<li>Basic thread management</li>
+						<li>Passing arguments to a thread function</li>
+						<li>Transferring ownership of a thread</li>
+						<li><b>Choosing the number of threads at runtime</b></li>
+						<li>Identifying threads</li>
+					</ol>
+				</section>
+
+				<section>
+					std::thread::hardware_concurrency() - returns an indication of the number of threads that can truly run concurrently for a given execution of a program (number of cores).
+				</section>
+
+				<section>
+<div style="width:100%; height:500px; overflow:scroll;"><pre>
+template<typename Iterator,typename T>
+struct accumulate_block
+{
+	void operator()(Iterator first,Iterator last,T& result)
+	{
+		result=std::accumulate(first,last,result);
+	}
+};
+template<typename Iterator,typename T>
+T parallel_accumulate(Iterator first,Iterator last,T init)
+{
+	unsigned long const length=std::distance(first,last);
+
+	if(!length)
+		return init;
+	
+	unsigned long const min_per_thread=25;
+	unsigned long const max_threads=(length+min_per_thread-1)/min_per_thread;
+	
+	unsigned long const hardware_threads=std::thread::hardware_concurrency();
+	
+	unsigned long const num_threads=std::min(hardware_threads!=0?hardware_threads:2,max_threads);
+
+	unsigned long const block_size=length/num_threads;
+
+	std::vector<T> results(num_threads);
+	std::vector<std::thread> threads(num_threads-1); f
+
+	Iterator block_start=first;
+	for(unsigned long i=0;i<(num_threads-1);++i)
+	{
+		Iterator block_end=block_start;
+		std::advance(block_end,block_size);
+		threads[i]=std::thread(accumulate_block<Iterator,T>(),block_start,block_end,std::ref(results[i]));
+		block_start=block_end;
+	}
+	accumulate_block<Iterator,T>()(block_start,last,results[num_threads-1]);
+
+	std::for_each(threads.begin(),threads.end(), std::mem_fn(&std::thread::join));
+
+	return std::accumulate(results.begin(),results.end(),init);
+}
+</pre></div>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Managing threads</b></div>
+					<br />
+					<ol>
+						<li>Basic thread management</li>
+						<li>Passing arguments to a thread function</li>
+						<li>Transferring ownership of a thread</li>
+						<li>Choosing the number of threads at runtime</li>
+						<li><b>Identifying threads</b></li>
+					</ol>
+				</section>
+
+				<section>
+					<ul>
+						<li>Thread identifiers have std::thread::id type</li>
+						<li>2 ways of obtaining:</li>
+						<ul>
+							<li>get_id() member function of std::thread class</li>
+							<li>std::this_thread::get_id() - for the current thread</li>
+						</ul>
+						<li>Objects of type std::thread::id can be freely copied and compared.</li>
+
+					</ul>
+				</section>
+
+				<section>
+<pre>
+std::thread::id master_thread;
+
+void some_core_part_of_algorithm()
+{
+	if(std::this_thread::get_id()==master_thread)
+	{
+		do_master_thread_work();
+	}
+
+	do_common_work();
+}
+</pre>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<b>Home assignent:</b>
+					<br />
+					<ul>
+						<li>Read: Chapter 2 - Managing threads</li>
+						<li>Lab assignments</li>
+						<li>Learn to use QR-codes</li>
+						<li>Refresh in mind GMail passwords</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/home/zhake/reveal.js/js/reveal.js"></script>
+	<script>
+		Reveal.initialize({
+
+    // Display controls in the bottom right corner
+    controls: true,
+
+    // Display a presentation progress bar
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: 'c/t',
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    center: true,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Randomizes the order of slides each time the presentation loads
+    shuffle: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Flags if we should show a help overlay when the questionmark
+    // key is pressed
+    help: true,
+
+    // Flags if speaker notes should be visible to all viewers
+    showNotes: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Use this method for navigation when auto-sliding
+    autoSlideMethod: Reveal.navigateNext,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // none/fade/slide/convex/concave/zoom
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px"
+
+    // Number of pixels to move the parallax background per slide
+    // - Calculated automatically unless specified
+    // - Set to 0 to disable movement along an axis
+    parallaxBackgroundHorizontal: null,
+    parallaxBackgroundVertical: null
+
+});
+</script>
+</body>
+</html>
