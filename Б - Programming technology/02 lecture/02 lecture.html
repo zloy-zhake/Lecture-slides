@@ -1,0 +1,333 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/home/zhake/reveal.js/css/reveal.css">
+	<link rel="stylesheet" type="text/css" href="/home/zhake/reveal.js/css/theme/white.css">
+</head>
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<!-- title slide -->
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li><b>Printing a line of text</b></li>
+						<li>Modifying a Program</li>
+						<li>Adding Integers</li>
+						<li>Memory Concepts</li>
+						<li>Arithmetic</li>
+						<li>Decision Making: Equality and Relational Operators</li>
+					</ol>
+				</section>
+
+				<section>
+					<img src="images/01.png" width="100%">
+				</section>
+
+				<section>
+					<ul>
+						<li>Comments</li>
+						<li>#include Preprocessing Directive</li>
+						<li>Blank Lines and White Space</li>
+						<li>The main() Function</li>
+						<li>An Output Statement</li>
+						<li>The <b>std</b> Namespace</li>
+						<li>The Stream Insertion Operator and Escape Sequences (&darr;)</li>
+						<li>The <b>return</b> Statement</li>
+					</ul>
+				</section>
+
+				<section>
+					<img src="images/02.png" width="100%">
+				</section>
+
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li>Printing a line of text</li>
+						<li><b>Modifying a Program</b></li>
+						<li>Adding Integers</li>
+						<li>Memory Concepts</li>
+						<li>Arithmetic</li>
+						<li>Decision Making: Equality and Relational Operators</li>
+					</ol>
+				</section>
+
+				<section>
+					<img src="images/03.png" width="100%">
+				</section>
+
+				<section>
+					<img src="images/04.png" width="100%">
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li>Printing a line of text</li>
+						<li>Modifying a Program</li>
+						<li><b>Adding Integers</b></li>
+						<li>Memory Concepts</li>
+						<li>Arithmetic</li>
+						<li>Decision Making: Equality and Relational Operators</li>
+					</ol>
+				</section>
+
+				<section>
+					<img src="images/05.png" width="100%">
+				</section>
+
+				<section>
+					<ul>
+						<li>Variable Declarations</li>
+						<li>Fundamental Types</li>
+						<li>Identifiers</li>
+						<li>Placement of Variable Declarations</li>
+						<li>Obtaining the Value from the User</li>
+							<ul>
+								<li>standard input stream object <b>cin</b></li>
+								<li>stream extraction operator, <b>>></b></li>
+								<li>Using multiple stream insertion operators (<<) in a single statement is referred to as <b>concatenating</b>, <b>chaining</b> or <b>cascading</b> stream insertion operations.</li>
+							</ul>
+					</ul>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li>Printing a line of text</li>
+						<li>Modifying a Program</li>
+						<li>Adding Integers</li>
+						<li><b>Memory Concepts</b></li>
+						<li>Arithmetic</li>
+						<li>Decision Making: Equality and Relational Operators</li>
+					</ol>
+				</section>
+
+				<section>
+					<ul>
+						<li>Variable names such as number1 , number2 and sum actually correspond to <b>locations</b> in the computer’s memory.</li>
+						<li>Every variable has a <b>name</b>, a <b>type</b>, a <b>size</b> and a <b>value</b>.</li>
+					</ul>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li>Printing a line of text</li>
+						<li>Modifying a Program</li>
+						<li>Adding Integers</li>
+						<li>Memory Concepts</li>
+						<li><b>Arithmetic</b></li>
+						<li>Decision Making: Equality and Relational Operators</li>
+					</ol>
+				</section>
+
+				<section>
+					<img src="images/06.png" width="100%">
+				</section>
+
+				<section>
+					<ul>
+						<li>Integer division</li>
+						<li>Rules of Operator Precedence</li>
+							<ul>
+								<li>parentheses</li>
+								<li>multiplication, division and modulus</li>
+								<li>Addition and subtraction</li>
+							</ul>
+					</ul>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Introduction to C++ Programming, Input/Output and Operators</b></div>
+					<br />
+					<ol>
+						<li>Printing a line of text</li>
+						<li>Modifying a Program</li>
+						<li>Adding Integers</li>
+						<li>Memory Concepts</li>
+						<li>Arithmetic</li>
+						<li><b>Decision Making: Equality and Relational Operators</b></li>
+					</ol>
+				</section>
+
+				<section>
+<div style="width:100%; height:500px; overflow:scroll;">
+<pre>
+#include &lt;iostream&gt; // allows program to perform input and output
+
+using std::cout; // program uses cout
+using std::cin; // program uses cin
+using std::endl; // program uses endl
+
+// function main begins program execution
+int main()
+{
+	int number1 = 0; // first integer to compare (initialized to 0)
+	int number2 = 0; // second integer to compare (initialized to 0)
+
+	cout << "Enter two integers to compare: "; // prompt user for data
+	cin >> number1 >> number2; // read two integers from user
+
+	if ( number1 == number2 )
+		cout << number1 << " == " << number2 << endl;
+	if ( number1 != number2 )
+		cout << number1 << " != " << number2 << endl;
+	if ( number1 < number2 )
+		cout << number1 << " < " << number2 << endl;
+	if ( number1 > number2 )
+		cout << number1 << " > " << number2 << endl;
+	if ( number1 <= number2 )
+		cout << number1 << " <= " << number2 << endl;
+	if ( number1 >= number2 )
+		cout << number1 << " >= " << number2 << endl;
+} // end function main
+</pre>
+</div>
+				</section>
+
+				<section>
+					<ul>
+						<li><b>using</b> Declarations</li>
+							<ul>
+								<li><b>using namespace std;</b></li>
+							</ul>
+						<li>Operator Precedence (&darr;)</li>
+					</ul>
+				</section>
+
+				<section>
+					<img src="images/07.png" width="100%">
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<div align="center"><b>Home assignment</b></div>
+					<br />
+					<ul>
+						<li>Read: Chapter 2 - Introduction to C++ Programming, Input/Output and Operators</li>
+						<li>Tests on Chapter 2: ...</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/home/zhake/reveal.js/js/reveal.js"></script>
+	<script>
+		Reveal.initialize({
+
+    // Display controls in the bottom right corner
+    controls: true,
+
+    // Display a presentation progress bar
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: 'c/t',
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    center: true,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Randomizes the order of slides each time the presentation loads
+    shuffle: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Flags if we should show a help overlay when the questionmark
+    // key is pressed
+    help: true,
+
+    // Flags if speaker notes should be visible to all viewers
+    showNotes: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Use this method for navigation when auto-sliding
+    autoSlideMethod: Reveal.navigateNext,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // none/fade/slide/convex/concave/zoom
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px"
+
+    // Number of pixels to move the parallax background per slide
+    // - Calculated automatically unless specified
+    // - Set to 0 to disable movement along an axis
+    parallaxBackgroundHorizontal: null,
+    parallaxBackgroundVertical: null
+
+});
+</script>
+</body>
+</html>
